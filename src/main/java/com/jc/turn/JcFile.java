@@ -160,34 +160,16 @@ public class JcFile {
         PrintWriter pw = new PrintWriter( new OutputStreamWriter(new FileOutputStream(goalFileDir), trunEncode));
 
         String line = br.readLine();
-
-        String regEx="[^0-9]";
-        Pattern p = Pattern.compile(regEx);
-        StringBuilder rLine = new StringBuilder();
+        StringBuilder rLine;
 
         while (line != null) {
 
-            String[] conpareLineL = line.split("\t");
+            String fixSt = line;
+            fixSt = fixSt.replace("\t","\\s");
+            System.out.println("fixSt = "+fixSt);
 
             rLine = new StringBuilder();
-
-            for(String conpareLineI:conpareLineL){
-                if(conpareLineI.indexOf(keyWord.toUpperCase()) != -1){
-
-                    Matcher m = p.matcher(conpareLineI);
-
-                    System.out.println("conpareLineI = "+conpareLineI);
-                    String oInt = m.replaceAll("").trim();
-                    String nInt = Integer.toString((Integer.parseInt(m.replaceAll("").trim())*4));
-                    System.out.println("O = "+conpareLineI);
-                    System.out.println("N = "+conpareLineI.replace(oInt,nInt));
-                    rLine.append(conpareLineI.replace(oInt,nInt));
-                }
-                else{
-                    rLine.append(conpareLineI);
-                }
-                rLine.append("\t");
-            }
+            rLine.append(spicalReplace1(line,keyWord,4));
             rLine.append("\r\n");
 
             pw.write(rLine.toString());
@@ -197,5 +179,46 @@ public class JcFile {
         pw.flush();
         pw.close();
 
+    }
+
+    /**
+     * 字串特殊處理
+     * @param sourceSt 來源字串
+     * @param keyWord 關鍵值
+     * @param multiple 倍數
+     * @return 處理完的字串
+     */
+    private static String spicalReplace1(String sourceSt,String keyWord,Integer multiple){
+        String returnVal = "";
+        StringBuilder rLine = new StringBuilder();
+        String regEx="[^0-9]";
+        Pattern p = Pattern.compile(regEx);
+
+        String fixSt = sourceSt;
+        fixSt = fixSt.replace("\t","\\s");
+        System.out.println("fixSt = "+fixSt);
+
+        String[] compareLineL = fixSt.split("\\s");
+
+
+        for(String compareLineI:compareLineL){
+            if(compareLineI.indexOf(keyWord.toUpperCase()) != -1){
+
+                Matcher m = p.matcher(compareLineI);
+
+                System.out.println("compareLineI = "+compareLineI);
+                String oInt = m.replaceAll("").trim();
+                String nInt = Integer.toString((Integer.parseInt(m.replaceAll("").trim())*multiple));
+                System.out.println("O = "+compareLineI);
+                System.out.println("N = "+compareLineI.replace(oInt,nInt));
+                rLine.append(compareLineI.replace(oInt,nInt));
+            }
+            else{
+                rLine.append(compareLineI);
+            }
+            rLine.append("\t");
+        }
+
+        return returnVal;
     }
 }
