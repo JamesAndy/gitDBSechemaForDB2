@@ -194,11 +194,38 @@ public class JcFile {
         String regEx="[^0-9]";
         Pattern p = Pattern.compile(regEx);
 
-        String fixSt = sourceSt;
-        fixSt = fixSt.replace("\t","\\s");
-        System.out.println("fixSt = "+fixSt);
+        String fixSt = sourceSt.replaceAll("\\s*", "");
+        System.out.println("fixSt_S = "+fixSt);
+        fixSt = fixSt.replace("\t"," ");
+        if(fixSt.indexOf(keyWord.toUpperCase()) > -1){
+            int s = fixSt.indexOf(keyWord.toUpperCase());
+            int e = 0;
+            if (fixSt.indexOf(");") > -1){
+                e = fixSt.indexOf(");");
+            }
+            else if (fixSt.indexOf("),") > -1){
+                e = fixSt.indexOf("),");
+            }
+            else if (fixSt.indexOf("))") > -1){
+                e = fixSt.indexOf("))");
+            }
+            else if (fixSt.indexOf(")") > -1){
+                e = fixSt.indexOf(")");
+            }
+            System.out.println(s);
+            System.out.println(e);
+            System.out.println(fixSt.substring(s,e));
 
-        String[] compareLineL = fixSt.split("\\s");
+            String v = fixSt.substring(s,e);
+            String a = v.replaceAll("\\s*", "");
+            System.out.println("a = "+a);
+
+            sourceSt = sourceSt.replace(v, a);
+        }
+
+        System.out.println("sourceSt = "+sourceSt);
+
+        String[] compareLineL = sourceSt.split("\\s");
 
 
         for(String compareLineI:compareLineL){
